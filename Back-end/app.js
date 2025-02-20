@@ -20,16 +20,7 @@ app.use("/user",userRoute)
 
 
 
-// app.post("/create",catchAsyncErrors(async(req,res,next)=>{
-//   const{name,email,password}=req.body;
-//   if(name&&email&&password){
-//     const newUser=new UserModel({
-//       name,email,password
-//   })
-//   await newUser.save();
-//   res.status(200).send({msg:"Successful"})
-//   }
-// }))
+
 // app.use(Errorhandle)
 
 module.exports = { app };
