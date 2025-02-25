@@ -2,12 +2,12 @@ const {app} =require("./app")
 require("dotenv").config()
 
 const connection =require("./db/connection")
-
+console.log(connection)
 const userRoute = require('./controllers/userRoute');
 
-
+connection()
 app.get("/test",async(req,res)=>{
-    res.send("hello......")
+    res.send("hello.....")
 })
 
 
