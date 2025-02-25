@@ -4,7 +4,7 @@ import './App.css'
 import Login from './pages/login'
 import Home from './pages/Home'
 import Navbar from './pages/Navbar'
-import CreateProduct from './pages/CreateProduct'
+import CreateProduct from './components/CreateProduct'
 function App() {
   
 

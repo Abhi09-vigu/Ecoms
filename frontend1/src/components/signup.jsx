@@ -1,183 +1,172 @@
 import React, { useState } from "react";
-import { FaRegEye } from "react-icons/fa6";
-import { FaRegEyeSlash } from "react-icons/fa6";
-import {useNavigate} from "react-router-dom";
-
-
-let url = "http://localhost:8979/user/signup";
-import axios from "axios"
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
+import axios from "axios";
 
 function Signup(props) {
-  const nav = useNavigate();
+  let [hide, setHide] = useState(true);
+  let [hided, setHided] = useState(true);
+  let [err, setErr] = useState("");
 
-
-  let [hidePassword, setHidePassword] = useState(true);
-  let [hideConfirmPassword, setHideConfirmPassword] = useState(true);
-   let [err,setErr]=useState("")
-
-   const [load,setLoad]=useState(false)
-
-  const handleHidePassword = () => {
-    setHidePassword(!hidePassword);
+  const handleHide = () => {
+    setHide(!hide);
   };
-
-  const handleHideConfirmPassword = () => {
-    setHideConfirmPassword(!hideConfirmPassword);
+  const handleHided = () => {
+    setHided(!hided);
   };
 
   const [data, setData] = useState({
-    name: "", // Added username field
+    name: "",
     email: "",
     password: "",
-    confirmPassword: "",
+    confirmpass: "",
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setData({ ...data, [name]: value });
-    console.log(data); // Will log the data as the state is updated
-    setErr("")
+  const handleForm = (e) => {
+    setData({ ...data, [e.target.name]: e.target.value });
+    console.log(data);
   };
 
-  const handleSubmit = async(e) => {
-    e.preventDefault()
-    
-    const { name, email, password, confirmPassword } = data;
-
-    if (!name || !email || !password || !confirmPassword) {
-      setErr("All fields are required.");
+  const handleSubmit = async () => {
+    const { name, email, password, confirmpass } = data;
+    if (password !== confirmpass) {
+      setErr("Passwords do not match");
+      return;
+    }
+    if (!name || !email || !password || !confirmpass) {
+      setErr("Please fill all fields");
       return;
     }
 
-    if (password !== confirmPassword) {
-      setErr("Passwords do not match.");
-      return;
-    }
-      
-   setLoad(true)
     try {
-      await axios.post(url, data)
-        setLoad(true)
-        // nav("/")
+      await axios
+        .post("http://localhost:8979/user/signup", {
+          name,
+          email,
+          password,
+        })
+        .then((response) => console.log(response.data));
+      console.log("Successfully registered");
     } catch (error) {
-      setErr(error.message)
       console.log(error);
-      setLoad(false)
+      setErr(resizeBy.data.message);
     }
-
-   
-     
-
-    // Reset the form data after submission
-    setData({
-      name: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    });
-
-     
   };
 
   return (
     <>
-      <div className="border-2 w-[650px] ">
-        <h1 className="text-3xl font-bold text-center">CREATE AN ACCOUNT</h1>
+      <div className="flex justify-center items-center min-h-screen bg-gray-100">
+        <div className="w-full sm:w-[400px] bg-white p-8 rounded-lg shadow-md">
+          <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">
+            Create an Account
+          </h1>
 
-        <div className="w-7/10 h-85 m-auto mt-10 mb-10 shadow-lg h-100">
-          {/* Username input */}
-          <label htmlFor="username" className="block ml-10 mt-10">
-            Username
+          {err && (
+            <div className="bg-red-200 text-red-800 p-2 rounded-md mb-4 text-center">
+              {err}
+            </div>
+          )}
+
+          <label htmlFor="name" className="block text-gray-600 font-medium mb-2">
+            Name
           </label>
           <input
-            onChange={handleChange}
-            type="text"
-            className="border-1 w-8/10 block m-auto h-8 rounded-md"
+            id="name"
             name="name"
+            type="text"
             value={data.name}
+            onChange={handleForm}
+            className="w-full p-3 border border-gray-300 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
 
-          {/* Email input */}
-          <label htmlFor="email" className="block ml-10 mt-5">
+          <label htmlFor="email" className="block text-gray-600 font-medium mb-2">
             Email address
           </label>
           <input
-            onChange={handleChange}
-            type="text"
-            className="border-1 w-8/10 block m-auto h-8 rounded-md"
+            id="email"
             name="email"
+            type="email"
             value={data.email}
+            onChange={handleForm}
+            className="w-full p-3 border border-gray-300 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
 
-          {/* Password input */}
-          <label htmlFor="password" className="block ml-10 mt-5">
+          <label htmlFor="password" className="block text-gray-600 font-medium mb-2">
             Password
           </label>
-          <div className="flex w-8/10 m-auto">
+          <div className="relative">
             <input
-              onChange={handleChange}
+              id="password"
               name="password"
-              type={hidePassword ? "password" : "text"}
-              className="border-1 w-[88%] block m-auto h-8 rounded-tl-md rounded-bl-md"
+              type={hide ? "password" : "text"}
               value={data.password}
+              onChange={handleForm}
+              className="w-full p-3 border border-gray-300 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-
-            {hidePassword ? (
-              <FaRegEye
-                className="border-1 h-8 ml-0 mr-5 w-6"
-                onClick={handleHidePassword}
-              />
-            ) : (
-              <FaRegEyeSlash
-                className="border-1 h-8 ml-0 mr-5 w-6"
-                onClick={handleHidePassword}
-              />
-            )}
+            <button
+              type="button"
+              onClick={handleHide}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+            >
+              {hide ? (
+                <FaRegEye size={20} />
+              ) : (
+                <FaRegEyeSlash size={20} />
+              )}
+            </button>
           </div>
 
-          {/* Confirm Password input */}
-          <label htmlFor="confirmPassword" className="block ml-10 mt-5">
+          <label htmlFor="confirmpass" className="block text-gray-600 font-medium mb-2">
             Confirm Password
           </label>
-          <div className="flex w-8/10 m-auto">
+          <div className="relative">
             <input
-              onChange={handleChange}
-              name="confirmPassword" // Correct name reference
-              type={hideConfirmPassword ? "password" : "text"}
-              className="border-1 w-[88%] block m-auto h-8 rounded-tl-md rounded-bl-md"
-              value={data.confirmPassword}
+              id="confirmpass"
+              name="confirmpass"
+              type={hided ? "password" : "text"}
+              value={data.confirmpass}
+              onChange={handleForm}
+              className="w-full p-3 border border-gray-300 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-
-            {hideConfirmPassword ? (
-              <FaRegEye
-                className="border-1 h-8 ml-0 mr-5 w-6"
-                onClick={handleHideConfirmPassword}
-              />
-            ) : (
-              <FaRegEyeSlash
-                className="border-1 h-8 ml-0 mr-5 w-6"
-                onClick={handleHideConfirmPassword}
-              />
-            )}
+            <button
+              type="button"
+              onClick={handleHided}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+            >
+              {hided ? (
+                <FaRegEye size={20} />
+              ) : (
+                <FaRegEyeSlash size={20} />
+              )}
+            </button>
           </div>
 
-          {/* Already a user text */}
-          <div>
-            <p onClick={props.x} className="ml-10">Already a User?</p>
+          <div className="flex justify-between items-center mb-4">
+            <div className="flex items-center">
+              <input type="checkbox" id="remember" className="mr-2" />
+              <label htmlFor="remember" className="text-gray-600">Remember me</label>
+            </div>
           </div>
 
-          {/* Submit button */}
-          <p className="text-red-500">{err}</p>
           <button
+            type="button"
             onClick={handleSubmit}
-            type="submit"
-            className="w-8/10 block m-auto bg-blue-500 rounded-m mt-5 h-8 rounded-md"
+            className="w-full p-3 bg-blue-600 text-white font-semibold rounded-md mb-4 hover:bg-blue-700 transition"
           >
-            <p className="text-xl font-bold text-white">Signup</p>
+            Signup
           </button>
+
+          <div className="text-center">
+            <p className="text-gray-600">
+              Already have an account?{" "}
+              <span
+                onClick={props.x}
+                className="text-blue-600 cursor-pointer hover:underline"
+              >
+                Login
+              </span>
+            </p>
+          </div>
         </div>
-          {console.log(load,"000000")}
-        {load&&<div><img className="animate-spin width-[30px] " src="https://cdn-icons-png.flaticon.com/512/152/152565.png"  /></div>}
       </div>
     </>
   );
