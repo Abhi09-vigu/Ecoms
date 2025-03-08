@@ -48,7 +48,17 @@ const userSchema =mongoose.Schema({
     isActivated:{
         type:Boolean,
         default:false
-    }
+    },
+    cart:[{
+        prdodutId:{
+            type:mongoose.Schema.ObjectId,
+            ref:"Product"
+        },
+        quantity:{
+            type:Number,
+            min:1
+        }
+    }]
 
 })
 
