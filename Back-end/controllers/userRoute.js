@@ -71,7 +71,7 @@ const {upload}=require("../middleware/multer")
        }
        jwt.verify(token, process.env.SECRET, async(err, decoded)=> {
           if(err){
-           return next(new Errorhadler("token is not valid",400))
+            next(new Errorhadler("token is not valid",400))
           }
           
           let id=decoded.id
@@ -98,35 +98,38 @@ userRoute.post("/login",catchAsyncError(async (req, res, next) => {
     const { email, password } = req.body;
     console.log(email)
     if (!email || !password) {
-     return next(new Errorhadler("email and password are reqires", 400));
+      next(new Errorhadler("email and password are reqires", 400));
     }
 
     let user = await UserModel.findOne({ email });
-    console.log(user,"9999999999999")
 
     if (!user) {
-      return next(new Errorhadler("Please Signup", 400));
+      next(new Errorhadler("Please Signup", 400));
     }
 
     if(!user.isActivated){
-      return next(new Errorhadler("Please Signup", 400));
+      next(new Errorhadler("Please Signup", 400));
     }
 
     await bcrypt.compare(password, user.password, function(err, result) {
       if(err){
-        return next(new Errorhadler("internal server error", 500));
+        next(new Errorhadler("internal server error", 500));
       }
       if(!result){
-        return next(new Errorhadler("password is incorrect", 400));
+        next(new Errorhadler("password is incorrect", 400));
       }
+
       let token = jwt.sign({ id: user._id }, process.env.SECRET, {
-        expiresIn: 60 * 60 * 60 * 24 * 30,
+        expiresIn: 1000 * 60 * 60 * 60 *24,
       });
       res.cookie("accesstoken", token, {
         httpOnly: true,
-        MaxAge: "5d",
+        secure: false, 
+        sameSite: "lax"
       });
-      res.status(200).json({status:true,message:"login successful"})
+      
+
+      res.status(200).json({status:true,message:"login successful",token})
 
       
     });
