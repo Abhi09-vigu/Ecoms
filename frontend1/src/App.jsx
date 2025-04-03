@@ -4,8 +4,8 @@ import './App.css'
 import Login from './pages/login.jsx'
 import Home from './pages/Home.jsx'
 import Createproudct from './components/Createproudct'
-import SellerProcutPage from "./pages/SellerProductPage"
-import NavBar from "./components/nav"
+import SellerProcutPage from './pages/SellerProduct.jsx'
+import NavBar from './components/navbar.jsx'
 import IndividualProduct from './pages/IndividualProduct'
 import Cart from  "./pages/Cart"
 import Profile from './pages/Profile'

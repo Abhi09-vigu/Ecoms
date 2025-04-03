@@ -3,10 +3,6 @@ import { useEffect ,useState} from "react";
 import axios from "axios"
 
 
-
-
-
-
 export default function SellerProcutPage() {
     
     let [data,setData]=useState([])
