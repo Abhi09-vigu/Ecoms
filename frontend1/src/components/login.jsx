@@ -1,70 +1,137 @@
-import React from "react";
-import { FaRegEye } from "react-icons/fa6";
-import { FaRegEyeSlash } from "react-icons/fa6";
-import { useState } from "react";
-import Loginpage from "../pages/login";
+import React, { useState } from "react";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function Login(props) {
+  const navigate = useNavigate();
 
-    let [hide,sethide]=useState(true)
-    const handlehide=()=>{
-      sethide(!hide)
+  const [hide, setHide] = useState(true);
+  const [error, setError] = useState("");
+  const [data, setData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleHide = () => {
+    setHide(!hide);
+  };
+
+  const handleForm = (e) => {
+    setError("")
+    setData({ ...data, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async () => {
+    const { email, password } = data;
+    if (!email || !password) {
+      setError("Please fill all fields");
+      return;
     }
-    
+
+    try {
+      await axios
+        .post("http://localhost:8979/user/login", {
+          email,
+          password,
+        })
+        .then((response) => {
+          console.log(response,"888")
+          navigate("/");
+        });
+
+      console.log("Login successful");
+      
+    } catch (error) {
+      console.log(error.response.data.message);
+      setError(error.response.data.message);
+    }
+  };
 
   return (
     <>
-      <div className="border-2 w-[550px]">
-        <h1 className="text-3xl font-bold text-center">
-          Login to your account
-        </h1>
+      <div className="flex justify-center items-center min-h-screen bg-gray-100">
+        <div className="w-full sm:w-[400px] bg-white p-8 rounded-lg shadow-md">
+          <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">
+            Login to your account
+          </h1>
 
-        <div className="w-7/10 h-85 m-auto mt-10 mb-10 shadow-lg">
-          <label htmlFor="" className="block ml-10 mt-10">
+          {error && (
+            <div className="bg-red-200 text-red-800 p-2 rounded-md mb-4 text-center">
+              {error}
+            </div>
+          )}
+
+          <label htmlFor="email" className="block text-gray-600 font-medium mb-2">
             Email address
           </label>
           <input
-            type="text"
-            className="border-1 w-8/10 block m-auto h-8 rounded-md"
+            id="email"
+            type="email"
+            name="email"
+            value={data.email}
+            onChange={handleForm}
+            className="w-full p-3 border border-gray-300 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          <label htmlFor="" className="block ml-10 mt-5 ">
+
+          <label htmlFor="password" className="block text-gray-600 font-medium mb-2">
             Password
           </label>
-          <div className="flex  w-8/10 m-auto">
+          <div className="relative">
             <input
-              type= {hide?"password":"text"}
-              className="border-1 w-[88%] block m-auto h-8 rounded-tl-md rounded-bl-md "/>
-
-              {hide?<FaRegEye className="border-1 h-8 ml-0 mr-5 w-6" onClick={handlehide}/>:<FaRegEyeSlash className="border-1 h-8 ml-0 mr-5 w-6" onClick={handlehide}/>}
-            
+              id="password"
+              name="password"
+              type={hide ? "password" : "text"}
+              value={data.password}
+              onChange={handleForm}
+              className="w-full p-3 border border-gray-300 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+              type="button"
+              onClick={handleHide}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+            >
+              {hide ? (
+                <FaRegEye size={20} />
+              ) : (
+                <FaRegEyeSlash size={20} />
+              )}
+            </button>
           </div>
 
-          <div className="flex m-auto mt-5  w-[80%]  justify-between ">
-            <div className="flex  w-[48%]">
-              <input type="checkbox" />
-              <label htmlFor="">Remember me</label>
-                
+          <div className="flex justify-between items-center mb-4">
+            <div className="flex items-center">
+              <input type="checkbox" id="remember" className="mr-2" />
+              <label htmlFor="remember" className="text-gray-600">Remember me</label>
             </div>
-              
-            <h6 className="font-semibold text-blue-700">Forgot password</h6>
+            <a href="#" className="text-blue-600 hover:underline text-sm">
+              Forgot password?
+            </a>
           </div>
 
           <button
-           
-            type="submit"
-            className=" w-8/10 block m-auto bg-blue-500 rounded-m mt-5 h-8 rounded-md"
+            type="button"
+            onClick={handleSubmit}
+            className="w-full p-3 bg-blue-600 text-white font-semibold rounded-md mb-4 hover:bg-blue-700 transition"
           >
-            {" "}
-            <p className="text-xl font-bold text-white">Login</p>
-
+            Login
           </button>
 
-
-          <h6 onClick={props.x} className="ml-9">Not have any account?</h6>
+          <div className="text-center">
+            <p className="text-gray-600">
+              Don't have an account?{" "}
+              <span
+                onClick={props.x}
+                className="text-blue-600 cursor-pointer hover:underline"
+              >
+                Sign up
+              </span>
+            </p>
+          </div>
         </div>
       </div>
-     
     </>
   );
 }
+
 export default Login;
