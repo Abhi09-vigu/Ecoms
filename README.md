@@ -401,9 +401,6 @@ Summary
 - Created a backend endpoint to handle order cancellation.
 - The endpoint receives the order-id, updates the order status to "canceled", and saves the changes.
 
-
-
-
 ## Milestone 29 - PayPal Integration (Frontend)
 
 - Created radio buttons for payment options: COD (Cash on Delivery) and Online Payment.
