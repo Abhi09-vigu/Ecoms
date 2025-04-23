@@ -1,16 +1,12 @@
 import ProductCard from "../components/product";
 import { useEffect ,useState} from "react";
 import axios from "axios"
-import {useNavigate} from "react-router-dom"
 
 
-
-
-export default function ProductPage() {
-   
+export default function SellerProcutPage() {
+    
     let [data,setData]=useState([])
-   
-    const navigate=useNavigate()
+    const [dle,setDle]=useState(false)
     useEffect(() => {
       const fetchData = async () => {
           try {
@@ -26,14 +22,24 @@ export default function ProductPage() {
       };
 
       fetchData();  
-  }, []);
-   
+  }, [dle]);
 
-  const handleClick = (id) => {
-   
-    navigate("/pro", { state: { id } });
-   };
 
+
+  const dele  = async(id)=>{
+    console.log("jjjjj")
+    try {
+     let responde=await axios.delete(`http://localhost:8080/product/delete/${id}`) 
+     
+     console.log(responde.data)
+     setDle(!dle)
+    } catch (error) {
+       console.log(error)
+       
+    }
+     
+     
+  }
 
 
 
@@ -41,7 +47,7 @@ export default function ProductPage() {
       <div className="w-full min-h-screen bg-neutral-800">
         <div className="grid grid-cols-5 gap-4 p-4">
           {data.map((product, index) => (
-            <ProductCard key={index} {...product}  click={()=>handleClick(product._id)}  />
+            <ProductCard key={index} {...product} role={"seller"} dele={()=>dele(product._id)} />
           ))}
         </div>
       </div>
