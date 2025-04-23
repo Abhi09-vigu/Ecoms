@@ -660,6 +660,10 @@ In this milestone, we implemented the *Place Order* functionality by adding a bu
 ## Overview
 In this milestone, we implemented the *Order Confirmation Page*, where users can review their order details before finalizing the purchase.
 
+
+
+
+
 ## Features Implemented
 ###  Frontend:
 - Created an *Order Confirmation Page* that displays:
